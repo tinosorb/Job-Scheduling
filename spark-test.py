@@ -25,3 +25,9 @@ class tests():
 	# reg query 3: match against certain actions for google
 	def reg3(self):
 	    rdd.filter(lambda line: re.search('google\sdisconnect|google\snotfound|google\sslow|google\sredirect', line)).count()
+
+
+
+
+
+	    
