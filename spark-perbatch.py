@@ -1,4 +1,5 @@
 import re
+import glob
 from threading import Thread
 from time import sleep
 
@@ -28,6 +29,25 @@ class tests():
 
 
 
+if __name__ == "__main__":
+	
+	filelist = glob.glob("/tmp/xiao/test4/*")
+    flag = 0
+    
+    for file in filelist:
+    	flag = flag + 1
+    	rdd = sc. textFile(file)
+		begin = tests()
+    	thread1 = Thread(target = begin.count)
+    	thread2 = Thread(target = begin.mention)
+    	thread3 = Thread(target = begin.reg1)
+    	thread4 = Thread(target = begin.reg2)
+    	thread5 = Thread(target = begin.reg3)
 
-
+    	thread1.start()
+    	thread2.start()
+    	thread3.start()
+    	thread4.start()
+    	thread5.start()
+    	print "FINISHED ALL QUERIES ON BATCH" flag
 	    
