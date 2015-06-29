@@ -1,0 +1,321 @@
+﻿import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.SparkConf
+
+val conf = new SparkConf().setAppName("Timer")
+conf.set("spark.scheduler.mode", "FAIR")
+conf.set("spark.scheduler.allocation.file","/Users/x36meng/Desktop/spark-1.1.0/poolsetting.xml")
+conf.set("spark.eventLog.enabled", "TRUE")
+conf.set("spark.eventLog.dir", "/Users/x36meng/Desktop/spark-1.1.0/logs/")
+val sc = new SparkContext(conf)
+sc.setLocalProperty("spark.scheduler.pool", "production")
+
+..............................................................
+val filelist = (new java.io.File("/Users/x36meng/Desktop/test2/twitter/")).listFiles
+val filelist = (new java.io.File("/Users/x36meng/Desktop/test42G/")).listFiles
+val filelist = (new java.io.File("/Users/x36meng/Desktop/test1/twitter/")).listFiles
+val filelist = (new java.io.File("/Users/x36meng/Desktop/test1-2/")).listFiles
+var i = 0
+
+for (i <- 0 to filelist.length - 1) {
+if ((i % 2 == 0) && (i != filelist.length - 1)){
+
+val rdd1 = sc.textFile(filelist(i).toString)
+val rdd2 = sc.textFile(filelist(i+1).toString)
+val rdd = rdd1.union(rdd2) 
+
+val countt = new Thread( new Runnable {
+def run() {
+rdd.count() 
+}
+})
+
+val reg = new Thread( new Runnable {
+def run() {
+rdd.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+}
+})
+
+val mention = new Thread( new Runnable {
+def run() {
+rdd.filter(line => line.contains("google")).count()
+}
+})
+
+val reg2 = new Thread( new Runnable {
+def run() {
+rdd.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+}
+})
+
+val reg3 = new Thread( new Runnable {
+def run() {
+rdd.map(line=>"www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+}
+})
+
+countt.start
+reg.start
+mention.start
+reg2.start
+reg3.start
+}
+}
+
+..............................................................................
+for (i <- 0 to filelist.length - 1) {
+if ((i % 4 == 0) && (i < filelist.length - 3)){
+val rdd1 = sc. textFile(filelist(i).toString)
+val rdd2 = sc. textFile(filelist(i+1).toString)
+val rdd3 = sc. textFile(filelist(i+2).toString)
+val rdd4 = sc. textFile(filelist(i+3).toString)
+val rdds = Seq(rdd1, rdd2, rdd3, rdd4)
+val bigRdd = sc.union(rdds)
+
+val countt = new Thread( new Runnable {
+def run() {
+rdd1.count() 
+}
+})
+
+val regg = new Thread( new Runnable {
+def run() {
+rdd1.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+val counttt = new Thread( new Runnable {
+def run() {
+rdd2.count() 
+}
+})
+
+val reggg = new Thread( new Runnable {
+def run() {
+rdd2.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+val cn3 = new Thread( new Runnable {
+def run() {
+rdd3.count() 
+}
+})
+
+val reg3 = new Thread( new Runnable {
+def run() {
+rdd3.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+val cn4 = new Thread( new Runnable {
+def run() {
+rdd4.count() 
+}
+})
+
+val reg4 = new Thread( new Runnable {
+def run() {
+rdd4.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+countt.start
+regg.start
+counttt.start
+reggg.start
+cn3.start
+reg3.start
+cn4.start
+reg4.start
+} else if ((i % 4 == 0) && (i == filelist.length - 3)){
+
+val rdd1 = sc. textFile(filelist(i).toString)
+val rdd2 = sc. textFile(filelist(i+1).toString)
+val rdd3 = sc. textFile(filelist(i+2).toString)
+
+val countt = new Thread( new Runnable {
+def run() {
+rdd1.count() 
+}
+})
+
+val regg = new Thread( new Runnable {
+def run() {
+rdd1.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+val counttt = new Thread( new Runnable {
+def run() {
+rdd2.count() 
+}
+})
+
+val reggg = new Thread( new Runnable {
+def run() {
+rdd2.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+val cn3 = new Thread( new Runnable {
+def run() {
+rdd3.count() 
+}
+})
+
+val reg3 = new Thread( new Runnable {
+def run() {
+rdd3.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+countt.start
+regg.start
+counttt.start
+reggg.start
+cn3.start
+reg3.start
+} else if ((i % 4 == 0) && (i == filelist.length - 2)){
+
+val rdd1 = sc. textFile(filelist(i).toString)
+val rdd2 = sc. textFile(filelist(i+1).toString)
+
+val countt = new Thread( new Runnable {
+def run() {
+rdd1.count() 
+}
+})
+
+val regg = new Thread( new Runnable {
+def run() {
+rdd1.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+val counttt = new Thread( new Runnable {
+def run() {
+rdd2.count() 
+}
+})
+
+val reggg = new Thread( new Runnable {
+def run() {
+rdd2.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+countt.start
+regg.start
+counttt.start
+reggg.start
+} else if ((i % 4 == 0) && (i == filelist.length - 1)){
+
+val rdd1 = sc. textFile(filelist(i).toString)
+
+val countt = new Thread( new Runnable {
+def run() {
+rdd1.count() 
+}
+})
+
+val regg = new Thread( new Runnable {
+def run() {
+rdd1.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+countt.start
+regg.start
+}
+}
+
+
+—————————————————————
+for (i <- 0 to filelist.length - 1) {
+if ((i % 4 == 0) && (i < filelist.length - 3)){
+val rdd1 = sc. textFile(filelist(i).toString)
+val rdd2 = sc. textFile(filelist(i+1).toString)
+val rdd3 = sc. textFile(filelist(i+2).toString)
+val rdd4 = sc. textFile(filelist(i+3).toString)
+val rdds = Seq(rdd1, rdd2, rdd3, rdd4)
+val bigRdd = sc.union(rdds)
+
+val countt = new Thread( new Runnable {
+def run() {
+bigRdd.count() 
+}
+})
+
+val regg = new Thread( new Runnable {
+def run() {
+bigRdd.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+countt.start
+regg.start
+
+} else if ((i % 4 == 0) && (i == filelist.length - 3)){
+
+val rdd1 = sc. textFile(filelist(i).toString)
+val rdd2 = sc. textFile(filelist(i+1).toString)
+val rdd3 = sc. textFile(filelist(i+2).toString)
+val rdds = Seq(rdd1, rdd2, rdd3)
+val bigRdd = sc.union(rdds)
+
+val countt = new Thread( new Runnable {
+def run() {
+bigRdd.count() 
+}
+})
+
+val regg = new Thread( new Runnable {
+def run() {
+bigRdd.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+countt.start
+regg.start
+} else if ((i % 4 == 0) && (i == filelist.length - 2)){
+
+val rdd1 = sc. textFile(filelist(i).toString)
+val rdd2 = sc. textFile(filelist(i+1).toString)
+val rdds = Seq(rdd1, rdd2)
+val bigRdd = sc.union(rdds)
+
+val countt = new Thread( new Runnable {
+def run() {
+bigRdd.count() 
+}
+})
+
+val regg = new Thread( new Runnable {
+def run() {
+bigRdd.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+countt.start
+regg.start
+} else if ((i % 4 == 0) && (i == filelist.length - 1)){
+
+val rdd1 = sc. textFile(filelist(i).toString)
+
+val countt = new Thread( new Runnable {
+def run() {
+rdd1.count() 
+}
+})
+
+val regg = new Thread( new Runnable {
+def run() {
+rdd1.map(line=>"www.google.[a-z]{2,3}|www.amazon.[a-z]{2,3}|www.paypal.[a-z]{2,3}|www.bing.[a-z]{2,3}|www.yahoo.[a-z]{2,3}|www.youtube.[a-z]{2,3}|www.facebook.[a-z]{2,3}|www.outlook.[a-z]{2,3}|www.dropbox.[a-z]{2,3}|www.gmail.[a-z]{2,3}|www.box.[a-z]{2,3}|www.apple.[a-z]{2,3}|www.pandora.[a-z]{2,3}|www.spotify.[a-z]{2,3}|www.instagram.[a-z]{2,3}|www.battlenet.[a-z]{2,3}|www.pinterest.[a-z]{2,3}|www.aol.[a-z]{2,3}|drive.google.[a-z]{2,3}".r.findAllIn(line).mkString).filter(_!="").count()
+  }
+})
+
+countt.start
+regg.start
+}
+}
